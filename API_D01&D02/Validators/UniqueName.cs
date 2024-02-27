@@ -15,8 +15,13 @@ namespace API_D01_D02.Validators
             {
                 return new ValidationResult("Department name must be Enter");
             }
-            var isthere = db.Departments.FirstOrDefault(d => d.name == value.ToString());
-            if (isthere == null)
+            string departmentName = value.ToString();
+            int currentDepartmentId = (int)validationContext.ObjectInstance.GetType().GetProperty("id").GetValue(validationContext.ObjectInstance, null);
+
+            var existingDepartment = db.Departments
+                .FirstOrDefault(d => d.name == departmentName && d.id != currentDepartmentId);
+
+            if (existingDepartment == null)
             {
                 return ValidationResult.Success;
             }
